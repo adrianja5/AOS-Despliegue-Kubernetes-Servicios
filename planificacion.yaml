@@ -34,7 +34,7 @@ spec:
         tier: backend
     spec:
       containers:
-      - image: edu1804/planificacion:latest
+      - image: tetusrocus/subsistema3:latest
         name: planificacion
         ports:
         - containerPort: 3000
