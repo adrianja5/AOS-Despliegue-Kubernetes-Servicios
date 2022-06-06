@@ -1,0 +1,42 @@
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: facturas
+  labels:
+    app: facturas
+spec:
+  ports:
+    - port: 8006
+      targetPort: 80
+  selector:
+    app: facturas
+    tier: backend
+  type: NodePort
+---
+
+# Despliegue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facturas
+  labels:
+    app: facturas
+spec:
+  selector:
+    matchLabels:
+      app: facturas
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: facturas
+        tier: backend
+    spec:
+      containers:
+      - image: eloz/grupo8facturas:latest
+        name: facturas
+        ports:
+        - containerPort: 80
+          name: facturas

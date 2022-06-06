@@ -1,0 +1,41 @@
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: vehiculos
+  labels:
+    app: vehiculos
+spec:
+  ports:
+    - port: 8003
+      targetPort: 5000
+  selector:
+    app: vehiculos
+    tier: backend
+  type: NodePort
+---
+# Despliegue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehiculos
+  labels:
+    app: vehiculos
+spec:
+  selector:
+    matchLabels:
+      app: vehiculos
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vehiculos
+        tier: backend
+    spec:
+      containers:
+      - image: esteban23/gestionvehiculosaos:v1
+        name: vehiculos
+        ports:
+        - containerPort: 5000
+          name: vehiculos

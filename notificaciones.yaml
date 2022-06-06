@@ -1,0 +1,42 @@
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: notificaciones
+  labels:
+    app: notificaciones
+spec:
+  ports:
+    - port: 8004
+      targetPort: 5000
+  selector:
+    app: notificaciones
+    tier: backend
+  type: NodePort
+---
+
+# Despliegue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notificaciones
+  labels:
+    app: notificaciones
+spec:
+  selector:
+    matchLabels:
+      app: notificaciones
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: notificaciones
+        tier: backend
+    spec:
+      containers:
+      - image: enriquer47/api_notificaciones:0.0.1
+        name: notificaciones
+        ports:
+        - containerPort: 5000
+          name: notificaciones

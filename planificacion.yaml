@@ -1,0 +1,41 @@
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: planificacion
+  labels:
+    app: planificacion
+spec:
+  ports:
+    - port: 8001
+      targetPort: 3000
+  selector:
+    app: planificacion
+    tier: backend
+  type: NodePort
+---
+# Despliegue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planificacion
+  labels:
+    app: planificacion
+spec:
+  selector:
+    matchLabels:
+      app: planificacion
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: planificacion
+        tier: backend
+    spec:
+      containers:
+      - image: edu1804/planificacion:latest
+        name: planificacion
+        ports:
+        - containerPort: 3000
+          name: planificacion

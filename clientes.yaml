@@ -1,0 +1,42 @@
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: clientes
+  labels:
+    app: clientes
+spec:
+  ports:
+    - port: 8005
+      targetPort: 8080
+  selector:
+    app: clientes
+    tier: backend
+  type: NodePort
+---
+
+# Despliegue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clientes
+  labels:
+    app: clientes
+spec:
+  selector:
+    matchLabels:
+      app: clientes
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: clientes
+        tier: backend
+    spec:
+      containers:
+      - image: edu1804/clientes:latest
+        name: clientes
+        ports:
+        - containerPort: 8080
+          name: clientes

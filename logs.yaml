@@ -1,0 +1,41 @@
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: logs
+  labels:
+    app: logs
+spec:
+  ports:
+    - port: 8002
+      targetPort: 3000
+  selector:
+    app: logs
+    tier: backend
+  type: NodePort
+---
+# Despliegue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logs
+  labels:
+    app: logs
+spec:
+  selector:
+    matchLabels:
+      app: logs
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: logs
+        tier: backend
+    spec:
+      containers:
+      - image: edu1804/logs:latest
+        name: logs
+        ports:
+        - containerPort: 3000
+          name: logs

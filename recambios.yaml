@@ -1,0 +1,62 @@
+# Servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: recambios
+  labels:
+    app: recambios
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8080
+  selector:
+    app: recambios
+    tier: backend
+  type: NodePort
+---
+# Volumen persistente
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: recambios-pv-claim
+  labels:
+    app: recambios
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+---
+# Despliegue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recambios
+  labels:
+    app: recambios
+spec:
+  selector:
+    matchLabels:
+      app: recambios
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: recambios
+        tier: backend
+    spec:
+      containers:
+      - image: ghcr.io/adrianja5/aos-implementacion-servicio-recambios:latest
+        name: recambios
+        ports:
+        - containerPort: 8080
+          name: recambios
+        volumeMounts:
+        - name: recambios-persistent-storage
+          mountPath: /service/db
+      volumes:
+      - name: recambios-persistent-storage
+        persistentVolumeClaim:
+          claimName: recambios-pv-claim
